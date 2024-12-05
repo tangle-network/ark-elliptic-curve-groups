@@ -27,7 +27,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ark-elliptic-groups = "0.1.0"
+ark-elliptic-groups = { git = "https://github.com/tangle-network/ark-elliptic-curve-groups" }
 ```
 
 ### Basic Example
