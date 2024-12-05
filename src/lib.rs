@@ -9,26 +9,26 @@ mod scalar;
 pub use group::ArkGroupWrapper;
 pub use scalar::ArkScalarWrapper;
 
-impl_wrapped_field!(ark_secp256k1::Fr, secp256k1_constants);
-impl_prime_field!(ark_secp256k1::Fr, secp256k1_constants);
-impl_group_for_curve!(ark_secp256k1::Projective);
+// impl_wrapped_field!(ark_secp256k1::Fr, secp256k1_constants);
+// impl_prime_field!(ark_secp256k1::Fr, secp256k1_constants);
+// impl_group_for_curve!(ark_secp256k1::Projective);
 
-impl_wrapped_field!(ark_secp256r1::Fr, secp256r1_constants);
-impl_prime_field!(ark_secp256r1::Fr, secp256r1_constants);
-impl_group_for_curve!(ark_secp256r1::Projective);
+// impl_wrapped_field!(ark_secp256r1::Fr, secp256r1_constants);
+// impl_prime_field!(ark_secp256r1::Fr, secp256r1_constants);
+// impl_group_for_curve!(ark_secp256r1::Projective);
 
-impl_wrapped_field!(ark_secp384r1::Fr, secp384r1_constants);
-impl_prime_field!(ark_secp384r1::Fr, secp384r1_constants);
-impl_group_for_curve!(ark_secp384r1::Projective);
+// impl_wrapped_field!(ark_secp384r1::Fr, secp384r1_constants);
+// impl_prime_field!(ark_secp384r1::Fr, secp384r1_constants);
+// impl_group_for_curve!(ark_secp384r1::Projective);
 
-impl_wrapped_field!(ark_secq256k1::Fr, secq256k1_constants);
-impl_prime_field!(ark_secq256k1::Fr, secq256k1_constants);
-impl_group_for_curve!(ark_secq256k1::Projective);
+// impl_wrapped_field!(ark_secq256k1::Fr, secq256k1_constants);
+// impl_prime_field!(ark_secq256k1::Fr, secq256k1_constants);
+// impl_group_for_curve!(ark_secq256k1::Projective);
 
-impl_wrapped_field!(ark_curve25519::Fr, curve25519_constants);
-impl_prime_field!(ark_curve25519::Fr, curve25519_constants);
-impl_group_for_curve!(ark_curve25519::EdwardsProjective);
-impl_group_for_curve!(ark_ed25519::EdwardsProjective);
+// impl_wrapped_field!(ark_curve25519::Fr, curve25519_constants);
+// impl_prime_field!(ark_curve25519::Fr, curve25519_constants);
+// impl_group_for_curve!(ark_curve25519::EdwardsProjective);
+// impl_group_for_curve!(ark_ed25519::EdwardsProjective);
 
 // impl_wrapped_field!(ark_bls12_377::Fr, bls12_377_constants);
 // impl_prime_field!(ark_bls12_377::Fr, bls12_377_constants);
@@ -58,9 +58,9 @@ impl_group_for_curve!(ark_ed25519::EdwardsProjective);
 // impl_prime_field!(ark_ed_on_cp6_782::Fr, ed_on_cp6_782_constants);
 // impl_group_for_curve!(ark_ed_on_cp6_782::EdwardsProjective);
 
-impl_wrapped_field!(ark_bls12_381::Fr, bls12_381_constants);
-impl_prime_field!(ark_bls12_381::Fr, bls12_381_constants);
-impl_group_for_curve!(ark_bls12_381::G1Projective);
+// impl_wrapped_field!(ark_bls12_381::Fr, bls12_381_constants);
+// impl_prime_field!(ark_bls12_381::Fr, bls12_381_constants);
+// impl_group_for_curve!(ark_bls12_381::G1Projective);
 
 // impl_wrapped_field!(ark_ed_on_bls12_381::Fr, ed_on_bls12_381_constants);
 // impl_prime_field!(ark_ed_on_bls12_381::Fr, ed_on_bls12_381_constants);
