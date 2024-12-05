@@ -6,88 +6,114 @@ edition = "2024"
 build = "build.rs"
 
 [dependencies]
+# Core dependencies
 elliptic-curve = "0.13.5"
 ff = "0.13.0"
 subtle = "2.5.0"
 rand_core = "0.6.4"
 
+# Arkworks core
 ark-ff = "0.5.0"
 ark-ec = "0.5.0"
+
+# BLS curves
 ark-bls12-377 = "0.5.0"
 ark-ed-on-bls12-377 = "0.5.0"
-
-ark-bw6-761 = "0.5.0"
-ark-ed-on-bw6-761 = "0.5.0"
-
-ark-bw6-767 = "0.5.0"
-
-ark-cp6-782 = "0.5.0"
-ark-ed-on-cp6-782 = "0.5.0"
-
 ark-bls12-381 = "0.5.0"
 ark-ed-on-bls12-381 = "0.5.0"
 ark-ed-on-bls12-381-bandersnatch = "0.5.0"
 
+# BN curves
 ark-bn254 = "0.5.0"
 ark-ed-on-bn254 = "0.5.0"
-ark-grumpkin = "0.5.0"
 
+# BW curves
+ark-bw6-761 = "0.5.0"
+ark-ed-on-bw6-761 = "0.5.0"
+ark-bw6-767 = "0.5.0"
+
+# CP curves
+ark-cp6-782 = "0.5.0"
+ark-ed-on-cp6-782 = "0.5.0"
+
+# MNT curves
 ark-mnt4-298 = "0.5.0"
 ark-mnt6-298 = "0.5.0"
 ark-ed-on-mnt4-298 = "0.5.0"
-
 ark-mnt4-753 = "0.5.0"
 ark-mnt6-753 = "0.5.0"
 ark-ed-on-mnt4-753 = "0.5.0"
 
-ark-pallas = "0.5.0"
-ark-vesta = "0.5.0"
-
+# SECP curves
 ark-secp256k1 = "0.5.0"
 ark-secp256r1 = "0.5.0"
 ark-secp384r1 = "0.5.0"
 ark-secq256k1 = "0.5.0"
 
+# Edwards curves
 ark-curve25519 = "0.5.0"
 ark-ed25519 = "0.5.0"
+
+# Other curves
+ark-pallas = "0.5.0"
+ark-vesta = "0.5.0"
+ark-grumpkin = "0.5.0"
+ark-serialize = "0.5.0"
+ark-std = "0.5.0"
+paste = "1.0.15"
+
 
 
 [build-dependencies]
+# Arkworks core
+ark-ec = "0.5.0"
 ark-ff = "0.5.0"
+ark-serialize = "0.5.0"
+
+# BLS curves
 ark-bls12-377 = "0.5.0"
 ark-ed-on-bls12-377 = "0.5.0"
-
-ark-bw6-761 = "0.5.0"
-ark-ed-on-bw6-761 = "0.5.0"
-
-ark-bw6-767 = "0.5.0"
-
-ark-cp6-782 = "0.5.0"
-ark-ed-on-cp6-782 = "0.5.0"
-
 ark-bls12-381 = "0.5.0"
 ark-ed-on-bls12-381 = "0.5.0"
 ark-ed-on-bls12-381-bandersnatch = "0.5.0"
 
+# BN curves
 ark-bn254 = "0.5.0"
 ark-ed-on-bn254 = "0.5.0"
-ark-grumpkin = "0.5.0"
 
+# BW curves
+ark-bw6-761 = "0.5.0"
+ark-ed-on-bw6-761 = "0.5.0"
+ark-bw6-767 = "0.5.0"
+
+# CP curves
+ark-cp6-782 = "0.5.0"
+ark-ed-on-cp6-782 = "0.5.0"
+
+# MNT curves
 ark-mnt4-298 = "0.5.0"
 ark-mnt6-298 = "0.5.0"
 ark-ed-on-mnt4-298 = "0.5.0"
-
 ark-mnt4-753 = "0.5.0"
 ark-mnt6-753 = "0.5.0"
 ark-ed-on-mnt4-753 = "0.5.0"
 
-ark-pallas = "0.5.0"
-ark-vesta = "0.5.0"
-
+# SECP curves
 ark-secp256k1 = "0.5.0"
 ark-secp256r1 = "0.5.0"
 ark-secp384r1 = "0.5.0"
 ark-secq256k1 = "0.5.0"
 
+# Edwards curves
 ark-curve25519 = "0.5.0"
 ark-ed25519 = "0.5.0"
+
+# Other curves
+ark-pallas = "0.5.0"
+ark-vesta = "0.5.0"
+ark-grumpkin = "0.5.0"
+
+[dev-dependencies]
+gennaro-dkg = "0.8.0"
+k256 = "0.13.4"
+maplit = "1.0.2"

@@ -1,73 +1,31 @@
+use ark_ec::CurveGroup;
 use ark_ff::{BigInteger, FftField, PrimeField};
+use ark_serialize::CanonicalSerialize;
 use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 
-fn main() {
-    let out_dir = env::var_os("OUT_DIR").unwrap();
-    let dest_path = Path::new(&out_dir).join("field_constants.rs");
-    let mut f = File::create(dest_path).unwrap();
+fn generate_curve_constants<G: CurveGroup>(f: &mut File, prefix: &str) {
+    writeln!(f, "#[allow(dead_code)]").unwrap();
+    writeln!(f, "pub mod {} {{", prefix).unwrap();
 
-    // Generate constants for secp256k1
-    generate_field_constants::<ark_secp256k1::Fr>(&mut f, "secp256k1_constants");
+    let generator = G::generator();
+    let mut buf = Vec::new();
+    generator.serialize_compressed(&mut buf).unwrap();
+    let compressed_size = <G as CanonicalSerialize>::compressed_size(&generator);
 
-    // Generate constants for secp256r1
-    generate_field_constants::<ark_secp256r1::Fr>(&mut f, "secp256r1_constants");
+    writeln!(f, "    #[allow(dead_code)]").unwrap();
+    writeln!(
+        f,
+        "    pub const COMPRESSED_POINT_SIZE: usize = {};",
+        compressed_size
+    )
+    .unwrap();
+    writeln!(f, "    #[allow(dead_code)]").unwrap();
+    writeln!(f, "    pub const GENERATOR_COMPRESSED: &[u8] = &{:?};", buf).unwrap();
 
-    // Generate constants for secp384r1
-    generate_field_constants::<ark_secp384r1::Fr>(&mut f, "secp384r1_constants");
-
-    // Generate constants for secq256k1
-    generate_field_constants::<ark_secq256k1::Fr>(&mut f, "secq256k1_constants");
-
-    // Generate constants for curve25519
-    generate_field_constants::<ark_curve25519::Fr>(&mut f, "curve25519_constants");
-
-    // Generate constants for ed25519
-    generate_field_constants::<ark_ed25519::Fr>(&mut f, "ed25519_constants");
-
-    // Generate constants for BLS12-377
-    generate_field_constants::<ark_bls12_377::Fr>(&mut f, "bls12_377_constants");
-    generate_field_constants::<ark_ed_on_bls12_377::Fr>(&mut f, "ed_on_bls12_377_constants");
-
-    // Generate constants for BW6-761
-    generate_field_constants::<ark_bw6_761::Fr>(&mut f, "bw6_761_constants");
-    generate_field_constants::<ark_ed_on_bw6_761::Fr>(&mut f, "ed_on_bw6_761_constants");
-
-    // Generate constants for BW6-767
-    generate_field_constants::<ark_bw6_767::Fr>(&mut f, "bw6_767_constants");
-
-    // Generate constants for CP6-782
-    generate_field_constants::<ark_cp6_782::Fr>(&mut f, "cp6_782_constants");
-    generate_field_constants::<ark_ed_on_cp6_782::Fr>(&mut f, "ed_on_cp6_782_constants");
-
-    // Generate constants for BLS12-381
-    generate_field_constants::<ark_bls12_381::Fr>(&mut f, "bls12_381_constants");
-    generate_field_constants::<ark_ed_on_bls12_381::Fr>(&mut f, "ed_on_bls12_381_constants");
-    generate_field_constants::<ark_ed_on_bls12_381_bandersnatch::Fr>(
-        &mut f,
-        "bandersnatch_constants",
-    );
-
-    // Generate constants for BN254
-    generate_field_constants::<ark_bn254::Fr>(&mut f, "bn254_constants");
-    generate_field_constants::<ark_ed_on_bn254::Fr>(&mut f, "ed_on_bn254_constants");
-    generate_field_constants::<ark_grumpkin::Fr>(&mut f, "grumpkin_constants");
-
-    // Generate constants for MNT4/6-298
-    generate_field_constants::<ark_mnt4_298::Fr>(&mut f, "mnt4_298_constants");
-    generate_field_constants::<ark_mnt6_298::Fr>(&mut f, "mnt6_298_constants");
-    generate_field_constants::<ark_ed_on_mnt4_298::Fr>(&mut f, "ed_on_mnt4_298_constants");
-
-    // Generate constants for MNT4/6-753
-    generate_field_constants::<ark_mnt4_753::Fr>(&mut f, "mnt4_753_constants");
-    generate_field_constants::<ark_mnt6_753::Fr>(&mut f, "mnt6_753_constants");
-    generate_field_constants::<ark_ed_on_mnt4_753::Fr>(&mut f, "ed_on_mnt4_753_constants");
-
-    // Generate constants for Pallas/Vesta
-    generate_field_constants::<ark_pallas::Fr>(&mut f, "pallas_constants");
-    generate_field_constants::<ark_vesta::Fr>(&mut f, "vesta_constants");
+    writeln!(f, "}}").unwrap();
 }
 
 fn generate_field_constants<F: PrimeField + FftField>(f: &mut File, prefix: &str) {
@@ -163,4 +121,139 @@ fn generate_field_constants<F: PrimeField + FftField>(f: &mut File, prefix: &str
     .unwrap();
 
     writeln!(f, "}}").unwrap();
+}
+
+fn main() {
+    let out_dir = env::var_os("OUT_DIR").unwrap();
+
+    // Generate curve constants
+    let curve_path = Path::new(&out_dir).join("curve_constants.rs");
+    let mut curve_file = File::create(&curve_path).unwrap();
+
+    generate_curve_constants::<ark_secp256k1::Projective>(
+        &mut curve_file,
+        "secp256k1_projective_constants",
+    );
+    generate_curve_constants::<ark_secp256r1::Projective>(
+        &mut curve_file,
+        "secp256r1_projective_constants",
+    );
+    generate_curve_constants::<ark_secp384r1::Projective>(
+        &mut curve_file,
+        "secp384r1_projective_constants",
+    );
+    generate_curve_constants::<ark_secq256k1::Projective>(
+        &mut curve_file,
+        "secq256k1_projective_constants",
+    );
+    generate_curve_constants::<ark_curve25519::EdwardsProjective>(
+        &mut curve_file,
+        "curve25519_projective_constants",
+    );
+    generate_curve_constants::<ark_ed25519::EdwardsProjective>(
+        &mut curve_file,
+        "ed25519_projective_constants",
+    );
+    generate_curve_constants::<ark_bw6_767::G1Projective>(&mut curve_file, "bw6_767_g1_constants");
+    generate_curve_constants::<ark_bw6_767::G2Projective>(&mut curve_file, "bw6_767_g2_constants");
+    generate_curve_constants::<ark_cp6_782::G1Projective>(&mut curve_file, "cp6_782_g1_constants");
+    generate_curve_constants::<ark_cp6_782::G2Projective>(&mut curve_file, "cp6_782_g2_constants");
+    generate_curve_constants::<ark_bls12_377::G1Projective>(
+        &mut curve_file,
+        "bls12_377_g1_constants",
+    );
+    generate_curve_constants::<ark_bls12_377::G2Projective>(
+        &mut curve_file,
+        "bls12_377_g2_constants",
+    );
+    generate_curve_constants::<ark_bls12_381::G1Projective>(
+        &mut curve_file,
+        "bls12_381_g1_constants",
+    );
+    generate_curve_constants::<ark_bls12_381::G2Projective>(
+        &mut curve_file,
+        "bls12_381_g2_constants",
+    );
+    generate_curve_constants::<ark_bn254::G1Projective>(&mut curve_file, "bn254_g1_constants");
+    generate_curve_constants::<ark_bn254::G2Projective>(&mut curve_file, "bn254_g2_constants");
+    generate_curve_constants::<ark_bw6_761::G1Projective>(&mut curve_file, "bw6_761_g1_constants");
+    generate_curve_constants::<ark_bw6_761::G2Projective>(&mut curve_file, "bw6_761_g2_constants");
+    generate_curve_constants::<ark_ed_on_bls12_377::EdwardsProjective>(
+        &mut curve_file,
+        "ed_on_bls12_377_constants",
+    );
+    generate_curve_constants::<ark_ed_on_bls12_381::EdwardsProjective>(
+        &mut curve_file,
+        "ed_on_bls12_381_constants",
+    );
+    generate_curve_constants::<ark_ed_on_bw6_761::EdwardsProjective>(
+        &mut curve_file,
+        "ed_on_bw6_761_constants",
+    );
+    generate_curve_constants::<ark_ed_on_cp6_782::EdwardsProjective>(
+        &mut curve_file,
+        "ed_on_cp6_782_constants",
+    );
+    generate_curve_constants::<ark_ed_on_mnt4_298::EdwardsProjective>(
+        &mut curve_file,
+        "ed_on_mnt4_298_constants",
+    );
+    generate_curve_constants::<ark_ed_on_mnt4_753::EdwardsProjective>(
+        &mut curve_file,
+        "ed_on_mnt4_753_constants",
+    );
+
+    // Generate field constants
+    let field_path = Path::new(&out_dir).join("field_constants.rs");
+    let mut field_file = File::create(&field_path).unwrap();
+
+    generate_field_constants::<ark_secp256k1::Fr>(&mut field_file, "secp256k1_constants");
+    generate_field_constants::<ark_secp256r1::Fr>(&mut field_file, "secp256r1_constants");
+    generate_field_constants::<ark_secp384r1::Fr>(&mut field_file, "secp384r1_constants");
+    generate_field_constants::<ark_secq256k1::Fr>(&mut field_file, "secq256k1_constants");
+    generate_field_constants::<ark_curve25519::Fr>(&mut field_file, "curve25519_constants");
+    generate_field_constants::<ark_ed25519::Fr>(&mut field_file, "ed25519_constants");
+
+    generate_field_constants::<ark_bls12_377::Fr>(&mut field_file, "bls12_377_fr_constants");
+    generate_field_constants::<ark_ed_on_bls12_377::Fr>(
+        &mut field_file,
+        "ed_on_bls12_377_fr_constants",
+    );
+    generate_field_constants::<ark_bw6_761::Fr>(&mut field_file, "bw6_761_fr_constants");
+    generate_field_constants::<ark_ed_on_bw6_761::Fr>(
+        &mut field_file,
+        "ed_on_bw6_761_fr_constants",
+    );
+    generate_field_constants::<ark_bw6_767::Fr>(&mut field_file, "bw6_767_fr_constants");
+    generate_field_constants::<ark_cp6_782::Fr>(&mut field_file, "cp6_782_fr_constants");
+    generate_field_constants::<ark_ed_on_cp6_782::Fr>(
+        &mut field_file,
+        "ed_on_cp6_782_fr_constants",
+    );
+    generate_field_constants::<ark_bls12_381::Fr>(&mut field_file, "bls12_381_fr_constants");
+    generate_field_constants::<ark_ed_on_bls12_381::Fr>(
+        &mut field_file,
+        "ed_on_bls12_381_fr_constants",
+    );
+    generate_field_constants::<ark_ed_on_bls12_381_bandersnatch::Fr>(
+        &mut field_file,
+        "bandersnatch_fr_constants",
+    );
+    generate_field_constants::<ark_bn254::Fr>(&mut field_file, "bn254_fr_constants");
+    generate_field_constants::<ark_ed_on_bn254::Fr>(&mut field_file, "ed_on_bn254_fr_constants");
+    generate_field_constants::<ark_grumpkin::Fr>(&mut field_file, "grumpkin_fr_constants");
+    generate_field_constants::<ark_mnt4_298::Fr>(&mut field_file, "mnt4_298_fr_constants");
+    generate_field_constants::<ark_mnt6_298::Fr>(&mut field_file, "mnt6_298_fr_constants");
+    generate_field_constants::<ark_ed_on_mnt4_298::Fr>(
+        &mut field_file,
+        "ed_on_mnt4_298_fr_constants",
+    );
+    generate_field_constants::<ark_mnt4_753::Fr>(&mut field_file, "mnt4_753_fr_constants");
+    generate_field_constants::<ark_mnt6_753::Fr>(&mut field_file, "mnt6_753_fr_constants");
+    generate_field_constants::<ark_ed_on_mnt4_753::Fr>(
+        &mut field_file,
+        "ed_on_mnt4_753_fr_constants",
+    );
+    generate_field_constants::<ark_pallas::Fr>(&mut field_file, "pallas_fr_constants");
+    generate_field_constants::<ark_vesta::Fr>(&mut field_file, "vesta_fr_constants");
 }

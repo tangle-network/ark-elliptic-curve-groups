@@ -4,7 +4,9 @@ A Rust library that provides wrappers around arkworks elliptic curve groups to i
 
 ## Features
 
-- Wraps arkworks elliptic curve groups to implement `elliptic-curve::Group`
+- Wraps arkworks elliptic curve groups to implement:
+  - `elliptic-curve::Group`
+  - `group::GroupEncoding` (with compressed point encoding)
 - Wraps arkworks field elements to implement `ff::Field`
 - Supports a wide variety of curves from the arkworks ecosystem:
   - BLS12-377
@@ -36,6 +38,7 @@ ark-elliptic-groups = { git = "https://github.com/tangle-network/ark-elliptic-cu
 use ark_elliptic_groups::{ArkGroupWrapper, ArkScalarWrapper};
 use ark_bls12_381::{G1Projective, Fr};
 use elliptic_curve::Group;
+use group::GroupEncoding;
 
 // Wrap an arkworks group element
 let point = G1Projective::generator();
@@ -47,6 +50,10 @@ let wrapped_scalar = ArkScalarWrapper::new(scalar);
 
 // Use with elliptic-curve traits
 let result = wrapped_point * wrapped_scalar;
+
+// Serialize/deserialize points
+let bytes = wrapped_point.to_bytes();
+let decoded = ArkGroupWrapper::<G1Projective>::from_bytes(&bytes);
 ```
 
 ### Implementing Generic Protocols
@@ -55,13 +62,15 @@ The wrappers allow you to write generic code that works with both native `ellipt
 
 ```rust
 use elliptic_curve::Group;
+use group::GroupEncoding;
 
-fn double_point<G: Group>(point: G) -> G {
-    point + point
+fn double_and_serialize<G: Group + GroupEncoding>(point: G) -> G::Repr {
+    let doubled = point + point;
+    doubled.to_bytes()
 }
 
 // Works with wrapped arkworks groups
-let doubled = double_point(wrapped_point);
+let encoded = double_and_serialize(wrapped_point);
 ```
 
 ## Implementation Details
@@ -69,6 +78,8 @@ let doubled = double_point(wrapped_point);
 The library provides two main wrapper types:
 
 - `ArkGroupWrapper<G>`: Wraps an arkworks curve group
+  - Implements standard group operations
+  - Provides compressed point encoding via `GroupEncoding`
 - `ArkScalarWrapper<F>`: Wraps an arkworks field element
 
 These wrappers implement the necessary traits to make them compatible with the `elliptic-curve` ecosystem while maintaining the performance characteristics of the underlying arkworks implementations.
